@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 คลังคำศัพท์</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(1deg); }
+      66% { transform: translateY(20px) rotate(-1deg); }
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h2 {
+      color: #fff;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      animation: slideUp 0.8s ease-out 0.2s both;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr auto;
+      gap: 15px;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      form {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+      background: #fff;
+    }
+
+    input::placeholder {
+      color: #999;
+      font-weight: 300;
+    }
+
+    .submit-btn {
+      padding: 15px 25px;
+      border: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .words-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+      animation: slideUp 0.8s ease-out 0.4s both;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      min-height: 200px;
+    }
+
+    .words-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .words-count {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(0, 0, 0, 0.02);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    li:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    li:hover::before {
+      transform: scaleY(1);
+    }
+
+    .word-content {
+      flex: 1;
+    }
+
+    .word {
+      font-weight: 700;
+      color: #333;
+      font-size: 18px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .meaning {
+      color: #666;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .delete-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3);
+    }
+
+    .delete-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    .delete-btn:active {
+      transform: translateY(0);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      font-weight: 300;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success animation */
+    .success-flash {
+      animation: successFlash 0.6s ease-out;
+    }
+
+    @keyframes successFlash {
+      0% { background-color: rgba(76, 175, 80, 0.1); }
+      100% { background-color: transparent; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>📚 คลังคำศัพท์</h2>
+      <p class="subtitle">เก็บรวบรวมคำศัพท์ที่คุณชื่นชอบ</p>
+    </div>
+
+    <div class="form-container">
+      <form id="wordForm">
+        <div class="input-group">
+          <input type="number" id="id" placeholder="ID" required min="1" />
+        </div>
+        <div class="input-group">
+          <input type="text" id="word" placeholder="คำศัพท์" required />
+        </div>
+        <div class="input-group">
+          <input type="text" id="meaning" placeholder="ความหมาย" required />
+        </div>
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <i class="fas fa-plus"></i>
+          <span>เพิ่มคำ</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="words-container">
+      <div class="words-header">
+        <h3><i class="fas fa-book"></i> รายการคำศัพท์</h3>
+        <span class="words-count" id="wordsCount">0 คำ</span>
+      </div>
+      <ul id="wordList"></ul>
+    </div>
+  </div>
+
+ <script>
+  const form = document.getElementById("wordForm");
+  const list = document.getElementById("wordList");
+  const wordsCount = document.getElementById("wordsCount");
+  const submitBtn = document.getElementById("submitBtn");
+
+  let words = [];
+
+  async function loadWords() {
+    const res = await fetch("/words");
+    words = await res.json();
+    words.sort((a, b) => a.id - b.id);
+    renderWordList();
+  }
+
+  function renderWordList() {
+    list.innerHTML = "";
+
+    if (words.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-book-open"></i>
+          <h3>ยังไม่มีคำศัพท์</h3>
+          <p>เริ่มต้นเพิ่มคำศัพท์แรกของคุณ</p>
+        </div>
+      `;
+    } else {
+      words.forEach((w, index) => {
+        const li = document.createElement("li");
+        li.style.animationDelay = `${index * 0.1}s`;
+        li.innerHTML = `
+          <div class="word-content">
+            <span class="word">#${w.id} ${w.word}</span>
+            <div class="meaning">${w.meaning}</div>
+          </div>
+          <button class="delete-btn" onclick="deleteWord(${w.id})">
+            <i class="fas fa-trash-alt"></i>
+            <span>ลบ</span>
+          </button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    wordsCount.textContent = `${words.length} คำ`;
+  }
+
+  async function deleteWord(id) {
+    if (!confirm("คุณต้องการลบคำศัพท์นี้หรือไม่?")) return;
+
+    const res = await fetch(`/words/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      await loadWords();
+      document.querySelector('.words-container').classList.add('success-flash');
+      setTimeout(() => document.querySelector('.words-container').classList.remove('success-flash'), 600);
+    } else {
+      const msg = await res.json();
+      alert(msg.detail || "ลบไม่สำเร็จ");
+    }
+  }
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+
+    const originalContent = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="loading"></span> กำลังเพิ่ม...';
+    submitBtn.disabled = true;
+
+    const newWord = {
+      id: parseInt(document.getElementById("id").value),
+      word: document.getElementById("word").value.trim(),
+      meaning: document.getElementById("meaning").value.trim(),
+    };
+
+    const res = await fetch("/words", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newWord),
+    });
+
+    if (!res.ok) {
+      const msg = await res.json();
+      alert(msg.detail || "เกิดข้อผิดพลาด");
+      submitBtn.innerHTML = originalContent;
+      submitBtn.disabled = false;
+      return;
+    }
+
+    form.reset();
+    await loadWords();
+    submitBtn.innerHTML = originalContent;
+    submitBtn.disabled = false;
+    document.getElementById("id").focus();
+
+    document.querySelector('.form-container').classList.add('success-flash');
+    setTimeout(() => document.querySelector('.form-container').classList.remove('success-flash'), 600);
+  };
+
+  document.getElementById("id").addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById("word").focus();
+    }
+  });
+
+  document.getElementById("word").addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById("meaning").focus();
+    }
+  });
+
+  loadWords();
+  document.getElementById("id").focus();
+</script>
+
+</body>
+</html>
